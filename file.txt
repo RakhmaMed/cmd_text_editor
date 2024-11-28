@@ -1,6 +1,0 @@
-Hello, World!
-1
-2 dddd
-34
-45
-Bye, bye!
