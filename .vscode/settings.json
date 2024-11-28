@@ -1,0 +1,14 @@
+{
+    "makefile.configureOnOpen": true,
+    "files.associations": {
+        "unistd.h": "c",
+        "time.h": "c"
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/rakhma/kilo",
+            "binaryPath": "/home/rakhma/kilo/kilo",
+            "binaryArgs": []
+        }
+    ]
+}
