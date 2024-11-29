@@ -127,30 +127,30 @@ int editorReadKey() {
 			return '\x1b';
 
 		if (seq[0] == '[') {
-				if (seq[1] >= '0' && seq[1] <= '9') {
-					if (read(STDIN_FILENO, &seq[2], 1) != 1)
-						return '\x1b';
-					if (seq[2] == '~') {
-						switch (seq[1]) {
-							case '1': return HOME_KEY;
-							case '3': return DEL_KEY;
-							case '4': return END_KEY;
-							case '5': return PAGE_UP;
-							case '6': return PAGE_DOWN;
-							case '7': return HOME_KEY;
-							case '8': return END_KEY;
-						}
-					}
-				} else {
+			if (seq[1] >= '0' && seq[1] <= '9') {
+				if (read(STDIN_FILENO, &seq[2], 1) != 1)
+					return '\x1b';
+				if (seq[2] == '~') {
 					switch (seq[1]) {
-						case 'A': return ARROW_UP;
-						case 'B': return ARROW_DOWN;
-						case 'C': return ARROW_RIGHT;
-						case 'D': return ARROW_LEFT;
-						case 'H': return HOME_KEY;
-						case 'F': return END_KEY;
+						case '1': return HOME_KEY;
+						case '3': return DEL_KEY;
+						case '4': return END_KEY;
+						case '5': return PAGE_UP;
+						case '6': return PAGE_DOWN;
+						case '7': return HOME_KEY;
+						case '8': return END_KEY;
 					}
 				}
+			} else {
+				switch (seq[1]) {
+					case 'A': return ARROW_UP;
+					case 'B': return ARROW_DOWN;
+					case 'C': return ARROW_RIGHT;
+					case 'D': return ARROW_LEFT;
+					case 'H': return HOME_KEY;
+					case 'F': return END_KEY;
+				}
+			}
 		} else if (seq[0] == 'O') {
 			switch (seq[1]) {
 				case 'H': return HOME_KEY;
@@ -194,7 +194,7 @@ int getWindowSize(int* rows, int* cols) {
 
 	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
 		if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12)
-				return -1;
+			return -1;
 		return getCursorPosition(rows, cols);
 	} else {
 		*cols = ws.ws_col;
@@ -235,11 +235,11 @@ void editorUpdateSyntax(erow* row) {
 int editorSyntaxToColor(int hl) {
 	switch (hl) {
 		case HL_NUMBER:
-				return 31;
+			return 31;
 		case HL_MATCH:
-				return 34;
+			return 34;
 		default:
-				return 37;
+			return 37;
 	}
 }
 
@@ -250,7 +250,7 @@ int editorRowCxToRx(erow* row, int cx) {
 	int j;
 	for (j = 0; j < cx; j++) {
 		if (row->chars[j] == '\t')
-				rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);
+			rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);
 		rx++;
 	}
 	return rx;
@@ -439,8 +439,8 @@ void editorOpen(char* filename) {
 	size_t linecap = 0;
 	ssize_t linelen;
 	while ((linelen = getline(&line, &linecap, fp)) != -1) {
-		while (linelen > 0 && (line[linelen - 1] == '\n' ||
-				line[linelen - 1] == '\r'))
+		while (linelen > 0 && (line[linelen - 1] == '\n'
+				|| line[linelen - 1] == '\r'))
 			linelen--;
 		editorInsertRow(E.numrows, line, linelen);
 	}
@@ -782,21 +782,21 @@ void editorMoveCursor(int key) {
 			}
 			break;
 		case ARROW_RIGHT:
-				if (row && E.cx < row->size) {
-					E.cx++;
-				} else if (row && E.cx == row->size) {
-					E.cy++;
-					E.cx = 0;
-				}
-				break;
+			if (row && E.cx < row->size) {
+				E.cx++;
+			} else if (row && E.cx == row->size) {
+				E.cy++;
+				E.cx = 0;
+			}
+			break;
 		case ARROW_UP:
-				if (E.cy != 0)
-					E.cy--;
-				break;
+			if (E.cy != 0)
+				E.cy--;
+			break;
 		case ARROW_DOWN:
-				if (E.cy < E.numrows)
-					E.cy++;
-				break;
+			if (E.cy < E.numrows)
+				E.cy++;
+			break;
 	}
 
 	row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
@@ -912,15 +912,16 @@ int main(int args, char* argv[]) {
 	enableRawMode();
 	initEditor();
 	if (args >= 2) {
-			editorOpen(argv[1]);
+		editorOpen(argv[1]);
 	}
 
 	editorSetStatusMessage(
-			"HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
+		"HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find"
+	);
 
 	while (1) {
-			editorRefreshScreen();
-			editorProcessKeypress();
+		editorRefreshScreen();
+		editorProcessKeypress();
 	}
 
 	return 0;
